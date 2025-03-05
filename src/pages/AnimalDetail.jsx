@@ -1,108 +1,144 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ImageGallery from '../components/ImageGallery';
-import { usePetFinder } from '../Api';
+import { useAnimal } from '../Api';
+
+const DetailSkeleton = () => (
+  <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="h-8 w-32 bg-gray-200 rounded mb-6 animate-pulse"></div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="space-y-6">
+        <div className="h-[400px] bg-gray-200 rounded animate-pulse"></div>
+        <div className="grid grid-cols-4 gap-2">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-20 bg-gray-200 rounded animate-pulse"></div>
+          ))}
+        </div>
+      </div>
+      <div className="space-y-6">
+        <div className="h-10 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+        <div className="grid grid-cols-2 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-24 bg-gray-200 rounded animate-pulse"></div>
+          ))}
+        </div>
+        <div className="space-y-4">
+          <div className="h-6 bg-gray-200 rounded w-1/3 animate-pulse"></div>
+          <div className="space-y-2">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-4 bg-gray-200 rounded animate-pulse"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 const AnimalDetail = () => {
-    const { id } = useParams();
-    const [animal, setAnimal] = useState(null);
-    const { getAnimal, loading, error } = usePetFinder();
+  const { id } = useParams();
+  const { data: animal, isLoading, isError, error } = useAnimal(id);
 
-    useEffect(() => {
-        const fetchAnimal = async () => {
-            try {
-                const data = await getAnimal(id);
-                setAnimal(data);
-            } catch (err) {
-                console.error('Error fetching animal:', err);
-            }
-        };
+  if (isLoading) {
+    return <DetailSkeleton />;
+  }
 
-        fetchAnimal();
-    }, [id, getAnimal]);
-
-    if (loading) {
-        return (
-            <div className="max-w-7xl mx-auto px-4 py-8">
-                <div className="animate-pulse space-y-8">
-                    <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                    <div className="h-80 bg-gray-200 rounded"></div>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="max-w-7xl mx-auto px-4 py-8">
-                <div className="text-red-500">Error loading animal: {error.message}</div>
-            </div>
-        );
-    }
-
-    if (!animal) return null;
-
+  if (isError) {
     return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
-            <Link
-                to="/"
-                className="inline-flex items-center text-pet-primary hover:text-pet-primary-dark mb-6"
-            >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Back to all pets
-            </Link>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                    <ImageGallery photos={animal.photos} />
-                </div>
-
-                <div className="space-y-6">
-                    <h1 className="text-4xl font-bold text-gray-900">{animal.name}</h1>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                            <span className="text-sm text-gray-500">Age</span>
-                            <p className="font-medium">{animal.age}</p>
-                        </div>
-                        {/* Additional Details */}
-                        <div className="space-y-2">
-                            <p><strong>Size:</strong> {animal.size}</p>
-                            {animal.colors?.primary && (
-                                <p><strong>Color:</strong> {animal.colors.primary}</p>
-                            )}
-                            {animal.attributes?.spayed_neutered && (
-                                <p>✓ Spayed/Neutered</p>
-                            )}
-                            {animal.attributes?.house_trained && (
-                                <p>✓ House Trained</p>
-                            )}
-                        </div>
-
-
-
-                        <div className="prose max-w-none">
-                            <h2 className="text-2xl font-semibold">About {animal.name}</h2>
-                            <p>{animal.description}</p>
-                        </div>
-
-                        <div className="border-t pt-6">
-                            <a
-                                href={animal.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block w-full bg-pet-primary text-white text-center py-4 px-6 rounded-lg hover:bg-pet-primary-dark transition-colors"
-                            >
-                                Start Adoption Process
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="bg-red-50 border-l-4 border-red-400 p-4" role="alert">
+          <p className="text-red-700">Error loading animal: {error.message}</p>
         </div>
+      </div>
     );
+  }
+
+  if (!animal) return null;
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <Link
+        to="/"
+        className="inline-flex items-center text-pet-primary hover:text-pet-primary-dark mb-6"
+      >
+        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to all pets
+      </Link>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <ImageGallery photos={animal.photos} />
+        </div>
+
+        <div className="space-y-6">
+          <h1 className="text-4xl font-bold text-gray-900">{animal.name}</h1>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <span className="text-sm text-gray-500">Age</span>
+              <p className="font-medium">{animal.age}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <span className="text-sm text-gray-500">Gender</span>
+              <p className="font-medium">{animal.gender}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <span className="text-sm text-gray-500">Size</span>
+              <p className="font-medium">{animal.size}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <span className="text-sm text-gray-500">Breed</span>
+              <p className="font-medium">
+                {animal.breeds.primary}
+                {animal.breeds.secondary && ` & ${animal.breeds.secondary}`}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold">Characteristics</h2>
+            <div className="flex flex-wrap gap-2">
+              {animal.colors?.primary && (
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">
+                  {animal.colors.primary}
+                </span>
+              )}
+              {animal.attributes?.spayed_neutered && (
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">
+                  Spayed/Neutered
+                </span>
+              )}
+              {animal.attributes?.house_trained && (
+                <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">
+                  House Trained
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="prose max-w-none whitespace-pre-wrap">
+            <h2 className="text-2xl font-semibold">About {animal.name}</h2>
+            <p className="text-gray-700 break-words">
+              {animal.description || "No description available"}
+            </p>
+          </div>
+
+          <div className="border-t pt-6">
+            <a
+              href={animal.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full bg-pet-primary text-white text-center py-4 px-6 rounded-lg hover:bg-pet-primary-dark transition-colors"
+            >
+              Start Adoption Process
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default AnimalDetail;

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import GridItem from "./GridItem";
 import FilterBar from "./FilterBar";
-import { petfinderClient, SHELTER_ID, ANIMALS_PER_PAGE } from '../api/config';
+import { useAnimals, useAnimalTypes } from "../Api";
 
 // Skeleton loading component for grid items
 const GridItemSkeleton = () => (
@@ -20,137 +20,76 @@ const GridItemSkeleton = () => (
 );
 
 const Grid = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(null);
-  const [pets, updatePets] = useState([]);
   const [filterType, setFilterType] = useState('');
-  const [availableTypes, setAvailableTypes] = useState([]);
-  // refs
-  const pageRef = useRef(totalPage);
-  const loadingRef = useRef(loading);
-  const currentPageRef = useRef(currentPage);
-
-  useEffect(() => {
-    getPets();
-    window.addEventListener("scroll", handleScroll);
-    
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [currentPage, filterType]);
-
-  const updateTotalPage = data => {
-    pageRef.current = data;
-    setTotalPage(data);
-  };
-
-  const updateLoading = data => {
-    loadingRef.current = data;
-    setLoading(data);
-  };
-
-  const updateCurrentPage = data => {
-    currentPageRef.current = data;
-    setCurrentPage(data);
-  };
-
-  const getPets = async () => {
-    try {
-      updateLoading(true);
-      
-      // Building the search parameters
-      const searchParams = {
-        organization: SHELTER_ID,
-        page: currentPageRef.current,
-        limit: ANIMALS_PER_PAGE,
-        status: 'adoptable',
-      };
-      
-      // Add type filter if selected
-      if (filterType) {
-        searchParams.type = filterType;
-      }
-      
-      const response = await petfinderClient.animal.search(searchParams);
-      const petsData = response.data;
-      
-      // Use Map to ensure unique animals by ID
-      const uniquePets = [...new Map([
-        ...(currentPageRef.current === 1 ? [] : pets), // Clear pets if it's first page
-        ...petsData.animals
-      ].map(animal => [animal.id, animal]))
-      .values()];
-      
-      // Extract unique animal types if we're on the first page
-      if (currentPageRef.current === 1) {
-        const types = [...new Set(uniquePets.map(pet => pet.type.toLowerCase()))];
-        setAvailableTypes(types);
-      }
-      
-      updatePets(uniquePets);
-      updateTotalPage(petsData.pagination.total_pages);
-      updateLoading(false);
-    } catch (error) {
-      console.error('Error fetching pets:', error);
-      setError(error);
-      updateLoading(false);
-    }
-  };
-
-  const handleScroll = () => {
-    if (
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 300 &&
-      !loadingRef.current &&
-      !(currentPageRef.current >= pageRef.current)
-    ) {
-      let nextPage = currentPageRef.current + 1;
-      updateCurrentPage(nextPage);
-    }
-  };
+  const { data: types = [], isLoading: isTypesLoading } = useAnimalTypes();
+  
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    status,
+    error
+  } = useAnimals(filterType);
 
   const handleFilterChange = (e) => {
     setFilterType(e.target.value);
-    // Reset to first page when filter changes
-    updateCurrentPage(1);
   };
+
+  // Show skeleton while initial data or types are loading
+  if (isLoading || isTypesLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50 rounded-lg">
+        <div className="animate-pulse mb-6">
+          <div className="h-10 bg-gray-200 rounded w-48"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <GridItemSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50 rounded-lg">
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          <p>{error.message}</p>
+      {status === 'error' && (
+        <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4" role="alert">
+          <p className="text-red-700">{error.message}</p>
         </div>
       )}
       
       <FilterBar 
         filterType={filterType} 
         onFilterChange={handleFilterChange} 
-        availableTypes={availableTypes}
+        availableTypes={types}
       />
       
-      {!loading && pets.length > 0 ? (
+      {data?.pages?.[0]?.animals?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {pets.map((animal, i) => (
-            <GridItem 
-              key={animal.id}
-              animal={animal}
-              index={i}
-            />
-          ))}
+          {data.pages.map((page) =>
+            page.animals.map((animal, i) => (
+              <GridItem 
+                key={animal.id}
+                animal={animal}
+                index={i}
+              />
+            ))
+          )}
         </div>
-      ) : !loading && (
+      ) : (
         <div className="text-center py-10 text-gray-500">
           No pets found matching your criteria.
         </div>
       )}
       
-      {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <GridItemSkeleton />
-          <GridItemSkeleton />
-          <GridItemSkeleton />
+      {isFetchingNextPage && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          {[...Array(3)].map((_, i) => (
+            <GridItemSkeleton key={`next-${i}`} />
+          ))}
         </div>
       )}
     </div>
