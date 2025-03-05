@@ -65,7 +65,8 @@ export const useAnimal = (id) => {
     queryKey: ['animal', id],
     queryFn: async () => {
       const response = await client.animal.show(id);
-      console.log('Full animal data:', response.data.animal); // Debug log
+      //console.log('Full animal data:', response.data.animal); // Debug log
+      
       return response.data.animal;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes

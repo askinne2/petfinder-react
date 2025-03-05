@@ -1,5 +1,6 @@
 import { Client } from "@petfinder/petfinder-js";
 import { QueryClient } from '@tanstack/react-query';
+import { isWordPress } from '../config/environment';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,11 +13,23 @@ export const queryClient = new QueryClient({
   },
 });
 
+const getHeaders = () => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (isWordPress()) {
+    headers['X-WP-Nonce'] = window.petfinderReactVars.nonce;
+  }
+
+  return headers;
+};
+
 export const petfinderClient = new Client({
-  apiKey: import.meta.env.VITE_API_KEY,
-  secret: import.meta.env.VITE_API_SECRET,
-  organization: import.meta.env.VITE_API_ORGANIZATION,
-  limit: import.meta.env.ANIMALS_PER_PAGE
+  apiKey: isWordPress() ? window.petfinderReactVars.apiKey : import.meta.env.VITE_API_KEY,
+  secret: isWordPress() ? window.petfinderReactVars.apiSecret : import.meta.env.VITE_API_SECRET,
+  headers: getHeaders(),
+  cors: true
 });
 
 // Prefetch and cache images

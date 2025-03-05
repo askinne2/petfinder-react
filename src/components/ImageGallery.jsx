@@ -69,15 +69,15 @@ const ImageGallery = ({ photos = [] }) => {
   return (
     <div className="image-gallery flex flex-col justify-center space-y-3">
       {/* Main featured image */}
-      <div className="relative rounded-lg overflow-hidden h-80 flex items-center justify-center">
-        <img 
-          key={currentIndex} // Add key to force remount and trigger transition
-          src={getCurrentImageUrl()} 
-          alt={hasPhotos && photos[currentIndex].name ? photos[currentIndex].name : 'Pet photo'} 
-          className="w-full h-full object-contain transform transition-transform duration-300 ease-in-out"
-        />
-        
-        {/* Navigation buttons */}
+        <div 
+          className="relative rounded-lg overflow-hidden min-h-[50vh] flex items-center justify-center"
+          style={{
+            backgroundImage: `url(${getCurrentImageUrl()})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center'
+          }}
+        >
+          {/* Navigation buttons */}
         {hasPhotos && photos.length > 1 && (
           <>
             <button 

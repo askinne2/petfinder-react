@@ -21,26 +21,3 @@ function run_petfinder_react() {
 }
 
 run_petfinder_react();
-
-function petfinder_react_enqueue_scripts() {
-    wp_enqueue_script(
-        'petfinder-react',
-        plugin_dir_url(__FILE__) . 'dist/assets/index.js',
-        [],
-        '1.0.0',
-        true
-    );
-
-    wp_localize_script('petfinder-react', 'petfinderReactVars', [
-        'apiUrl' => rest_url('petfinder-react/v1'),
-        'nonce' => wp_create_nonce('wp_rest'),
-        'isWordPress' => true
-    ]);
-}
-add_action('wp_enqueue_scripts', 'petfinder_react_enqueue_scripts');
-
-// Register shortcode
-function petfinder_react_shortcode() {
-    return '<div id="petfinder-react-root"></div>';
-}
-add_shortcode('petfinder_react', 'petfinder_react_shortcode');

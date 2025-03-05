@@ -7,6 +7,7 @@
 @layer components {
   .pet-card {
     @apply bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1 flex flex-col h-full;
+    text-decoration: none;
   }
   
   .pet-details {
@@ -82,6 +83,11 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  .thumbnail {
+    border: transparent;
+    padding: 0;
+  }
+  
   /* Enhanced touch support */
   .image-gallery-swipeable {
     @apply touch-pan-y select-none;

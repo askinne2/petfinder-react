@@ -24,7 +24,17 @@ export default defineConfig(({ mode }) => ({
   },
   server: {
     port: 5173,
-    host: true
+    host: true,
+    cors: {
+      origin: [
+        'http://localhost',
+        'http://localhost:8888',
+        'https://api.petfinder.com'
+      ],
+      methods: ['GET', 'POST', 'OPTIONS'],
+      credentials: true,
+      allowedHeaders: ['Authorization', 'Content-Type', 'X-WP-Nonce']
+    }
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(mode)

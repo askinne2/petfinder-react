@@ -2,8 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from 'react-router-dom';
 import ImageCarousel from "../components/ImageCarousel";
+import { sanitizeAnimal } from '../utils/sanitize';
+
 
 const GridItem = ({ animal, index }) => {
+  const sanitizedAnimal = sanitizeAnimal(animal);
+    
+  if (!sanitizedAnimal) return null;
+
+  
   const getAgeGender = () => {
     return `${animal.age || ''} ${animal.gender || ''} ${animal.type || ''}`;
   };
@@ -41,6 +48,9 @@ const GridItem = ({ animal, index }) => {
         <p className="text-gray-600">{getAgeGender()}</p>
         <p className="text-sm text-gray-500">{getBreeds()}</p>
         <p className="mt-2 text-gray-700 flex-1">{getShortDescription()}</p>
+        <div className="mt-1 justify-end flex">
+          <span className="bg-pet-primary text-white no-underline px-4 py-2 rounded-md inline-block">More Info</span>
+        </div>
       </div>
     </Link>
   );

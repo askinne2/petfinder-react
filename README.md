@@ -27,6 +27,19 @@ Use the following shortcode to display pets on any page or post:
 [petfinder_react]
 ```
 
+### Optional Attributes
+
+- `type` - Filter by animal type (e.g., "dog", "cat")
+- `breed` - Filter by breed
+- `size` - Filter by size
+- `gender` - Filter by gender
+- `age` - Filter by age
+
+#### Example:
+```
+[petfinder_react type="dog" breed="german-shepherd"]
+```
+
 ## Requirements
 
 - WordPress 5.0 or higher

@@ -35,6 +35,8 @@ class PetFinder_React_Public {
             array(
                 'apiKey' => $options['api_key'] ?? '',
                 'apiSecret' => $options['api_secret'] ?? '',
+                'shelterId' => $options['shelter_id'] ?? '',
+                'postsPerPage' => $options['posts_per_page'] ?? 20,
                 'restUrl' => rest_url('wp/v2/'),
                 'nonce' => wp_create_nonce('wp_rest'),
                 'isWordPress' => true
@@ -42,26 +44,50 @@ class PetFinder_React_Public {
         );
     }
 
-    public function render_shortcode($atts = [], $content = null) {
-        // Shortcode attributes with defaults
-        $attributes = shortcode_atts(
-            array(
-                'shelter_id' => '',
-                'type' => '',
-                'breed' => '',
-                'size' => '',
-                'gender' => '',
-                'age' => ''
-            ),
-            $atts
-        );
+    public function sanitize_shortcode_atts($atts) {
+        $clean_atts = array();
+        
+        // Allowed animal types
+        $allowed_types = array('dog', 'cat', 'rabbit', 'small-furry', 'horse', 'bird', 'scales-fins-other', 'barnyard');
+        
+        // Allowed sizes
+        $allowed_sizes = array('small', 'medium', 'large', 'xlarge');
+        
+        // Allowed genders
+        $allowed_genders = array('male', 'female', 'unknown');
+        
+        // Sanitize type
+        if (!empty($atts['type'])) {
+            $type = strtolower(sanitize_text_field($atts['type']));
+            $clean_atts['type'] = in_array($type, $allowed_types) ? $type : '';
+        }
+        
+        // Sanitize breed (allow only letters, numbers, spaces, and hyphens)
+        if (!empty($atts['breed'])) {
+            $clean_atts['breed'] = preg_replace('/[^a-zA-Z0-9\s-]/', '', sanitize_text_field($atts['breed']));
+        }
+        
+        // Sanitize size
+        if (!empty($atts['size'])) {
+            $size = strtolower(sanitize_text_field($atts['size']));
+            $clean_atts['size'] = in_array($size, $allowed_sizes) ? $size : '';
+        }
+        
+        // Sanitize gender
+        if (!empty($atts['gender'])) {
+            $gender = strtolower(sanitize_text_field($atts['gender']));
+            $clean_atts['gender'] = in_array($gender, $allowed_genders) ? $gender : '';
+        }
+        
+        return $clean_atts;
+    }
 
-        // Create a container for React to mount
-        $output = sprintf(
+    public function render_shortcode($atts = []) {
+        $clean_atts = $this->sanitize_shortcode_atts($atts);
+        
+        return sprintf(
             '<div id="petfinder-react-root" data-attributes="%s"></div>',
-            esc_attr(json_encode($attributes))
+            esc_attr(wp_json_encode($clean_atts))
         );
-
-        return $output;
     }
 }
