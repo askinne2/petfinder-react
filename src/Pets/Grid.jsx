@@ -1,7 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import GridItem from "./GridItem";
-import Loader from "../Loader/Loader.jsx";
 import { petfinderClient, SHELTER_ID, ANIMALS_PER_PAGE } from '../api/config';
+
+// Skeleton loading component for grid items
+const GridItemSkeleton = () => (
+  <div className="bg-white rounded-lg shadow-sm overflow-hidden h-[450px] animate-pulse">
+    <div className="w-full h-48 bg-gray-200"></div>
+    <div className="p-4">
+      <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+      <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+      <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
+      <div className="h-3 bg-gray-200 rounded w-4/5 mb-2"></div>
+      <div className="h-3 bg-gray-200 rounded w-5/6 mb-2"></div>
+      <div className="h-3 bg-gray-200 rounded w-3/4 mb-8"></div>
+      <div className="h-8 bg-gray-200 rounded w-2/5 mt-auto"></div>
+    </div>
+  </div>
+);
 
 const Grid = () => {
   const [loading, setLoading] = useState(true);
@@ -126,25 +141,27 @@ const Grid = () => {
       
       <FiltersBar />
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {pets.length > 0 ? (
-          pets.map((animal, i) => (
+      {!loading && pets.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {pets.map((animal, i) => (
             <GridItem 
               key={animal.id}
               animal={animal}
               index={i}
             />
-          ))
-        ) : !loading && (
-          <div className="col-span-3 text-center py-10 text-gray-500">
-            No pets found matching your criteria.
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : !loading && (
+        <div className="text-center py-10 text-gray-500">
+          No pets found matching your criteria.
+        </div>
+      )}
       
       {loading && (
-        <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-pet-primary border-t-transparent"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <GridItemSkeleton />
+          <GridItemSkeleton />
+          <GridItemSkeleton />
         </div>
       )}
     </div>

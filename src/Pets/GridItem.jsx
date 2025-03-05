@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import ImageCarousel from "../components/ImageCarousel";
+import PetModal from "../components/PetModal";
 
 const GridItem = ({ animal, index }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // Get the image URL or use placeholder if none available
   const getImageUrl = () => {
     if (animal.photos && animal.photos.length > 0) {
@@ -29,43 +33,51 @@ const GridItem = ({ animal, index }) => {
 
   // Get shortened description
   const getShortDescription = () => {
-    if (!animal.description) return "No description available";
+    if (!animal.description) return "Check back later for my bio!";
     
     return animal.description.length > 100 
-      ? animal.description.substring(0, 100) + "..."
+      ? animal.description.substring(0, 175) + "..."
       : animal.description;
   };
 
   return (
-    <div className={`pet-card animated fadeInUp delay-${index % 10}s`}>
-      <div className="pet-image">
-        <img src={getImageUrl()} alt={animal.name} loading="lazy" />
-        {animal.status === 'adoptable' && (
-          <span className="status-badge">Adoptable</span>
-        )}
-      </div>
-      <div className="pet-details">
-        <h3 className="pet-name">{animal.name}</h3>
-        <div className="pet-info">
-          <span>{getAgeGender()}</span>
-          {animal.distance && (
-            <span className="distance"> • {Math.round(animal.distance)} miles</span>
-          )}
+    <>
+      <div 
+        className="pet-card animate-fade-in-up cursor-pointer"
+        style={{ animationDelay: `${index * 0.1}s` }}
+        onClick={() => setIsModalOpen(true)}
+      >
+        <ImageCarousel images={animal.photos} alt={animal.name} />
+        <div className="pet-details">
+          <h3 className="pet-name">{animal.name}</h3>
+          <div className="pet-info">
+            <span>{getAgeGender()}</span>
+            {animal.distance && (
+              <span className="distance"> • {Math.round(animal.distance)} miles</span>
+            )}
+          </div>
+          <div className="pet-breeds">{getBreeds()}</div>
+          <p className="pet-description">{getShortDescription()}</p>
+          <div className="pet-footer">
+            <a 
+              href={animal.url} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="adopt-link"
+            >
+              Meet {animal.name}
+            </a>
+          </div>
         </div>
-        <div className="pet-breeds">{getBreeds()}</div>
-        <p className="pet-description">{getShortDescription()}</p>
-        <div className="pet-footer">
-          <a 
-            href={animal.url} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="adopt-link"
-          >
-            Meet {animal.name}
-          </a>
-        </div>
       </div>
-    </div>
+
+      {isModalOpen && (
+        <PetModal 
+          animal={animal} 
+          onClose={() => setIsModalOpen(false)} 
+        />
+      )}
+    </>
   );
 };
 
