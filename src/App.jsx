@@ -1,5 +1,7 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, HashRouter, Routes, Route } from 'react-router-dom';
+import { isWordPress } from './config/environment';
+import { getBasePath } from './config/routes';
 import Navbar from "./Navbar/Navbar";
 import Grid from './Pets/Grid';
 import AnimalDetail from './pages/AnimalDetail';
@@ -7,9 +9,12 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './api/config';
 
 const App = () => {
+  // Use HashRouter for WordPress to avoid server routing conflicts
+  const RouterComponent = isWordPress() ? HashRouter : BrowserRouter;
+
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <RouterComponent basename={getBasePath()}>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           <main className="container mx-auto px-4 py-8">
@@ -19,7 +24,7 @@ const App = () => {
             </Routes>
           </main>
         </div>
-      </BrowserRouter>
+      </RouterComponent>
     </QueryClientProvider>
   );
 };

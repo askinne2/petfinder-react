@@ -5,3 +5,15 @@ dist/
 .DS_Store
 coverage/
 .vscode/
+
+# Add to your .gitignore
+.DS_Store
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/backup-db/
+wp-content/backups/
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/themes/twenty*/

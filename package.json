@@ -4,8 +4,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:wp": "vite build --mode wordpress && npm run tailwind",
     "preview": "vite preview",
-    "tailwind": "tailwindcss -i ./src/index.css -o ./dist/output.css --watch"
+    "tailwind": "tailwindcss -i ./src/index.css -o ./dist/css/styles.css --minify",
+    "watch": "vite build --watch --mode wordpress",
+    "deploy": "chmod +x ./build.sh && ./build.sh"
   },
   "dependencies": {
     "@petfinder/petfinder-js": "^1.0.6",

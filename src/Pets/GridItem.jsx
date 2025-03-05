@@ -33,7 +33,7 @@ const GridItem = ({ animal, index }) => {
       className="pet-card animate-fade-in-up hover:shadow-lg transition-all duration-300"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <div className="h-48 relative overflow-hidden">
+      <div className="size-300 relative overflow-hidden">
         <ImageCarousel images={animal.photos} alt={animal.name} />
       </div>
       <div className="p-4 flex flex-col flex-1">

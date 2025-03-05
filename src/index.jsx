@@ -1,38 +1,39 @@
-import React from "react";
-import App from "./App";
-//import "bootstrap/dist/css/bootstrap.css";
-//import "font-awesome/css/font-awesome.css";
-//import "animate.css/animate.compat.css";
-// import "./scss/main.scss";
-// import "./style.css"
-import "./index.css";
+import React from 'react';
 import { createRoot } from 'react-dom/client';
+import App from './App';
+import { isWordPress } from './config/environment';
+import './index.css';
 
-// Add global debug logging
-if (import.meta.env.DEV) {
-  window.addEventListener('fetch', (event) => {
-    console.log('Network request:', event.request.url);
-  });
-  
-  console.log('React version:', React.version);
-  console.log('Environment:', import.meta.env.MODE);
+const mount = () => {
+    const rootElement = document.getElementById(
+        isWordPress() ? 'petfinder-react-root' : 'root'
+    );
+    
+    if (rootElement) {
+        // Get WordPress shortcode attributes if they exist
+        const attributes = rootElement.dataset.attributes 
+            ? JSON.parse(rootElement.dataset.attributes)
+            : {};
+
+        const root = createRoot(rootElement);
+        root.render(
+            <React.StrictMode>
+                <App initialAttributes={attributes} />
+            </React.StrictMode>
+        );
+    }
+};
+
+// Mount immediately in standalone mode
+if (!isWordPress()) {
+    mount();
 }
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('ServiceWorker registration successful');
-      })
-      .catch(err => {
-        console.log('ServiceWorker registration failed:', err);
-      });
-  });
+// Mount when DOM is ready in WordPress
+if (isWordPress()) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', mount);
+    } else {
+        mount();
+    }
 }
-
-const root = createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
