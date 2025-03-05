@@ -16,7 +16,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <RouterComponent basename={getBasePath()}>
         <div className="min-h-screen bg-gray-50">
-          <Navbar />
+          {!isWordPress() && <Navbar />}
           <main className="container mx-auto px-4 py-8">
             <Routes>
               <Route path="/" element={<Grid />} />

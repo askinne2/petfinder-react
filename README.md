@@ -1,62 +1,42 @@
-<p align="center" >
-<img src="src/Images/wall.jpg" alt="drawing" style="max-width: 30%;"/>
-</p>
+# Petfinder React Plugin
 
-<p align="center">
-  <a href="https://github.com/kamranahmedse/githunt">
-    <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg" alt="contributions" />
-  </a>
-  <a href="https://github.com/junipdewan/githunt/blob/master/license.md">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="license-mit" />
-  </a>
-</p>
-<p align="center">
-  <b>Get your favorite Pet</b></br>
-  <sub>✨ React app that helps you to find your favorite pet ✨<sub> 
-</p>
+A WordPress plugin that integrates Petfinder API with React components to display adoptable pets on your website.
 
-<p align="center">
-   <img src="src/Images/preview.jpg" alt="drawing" style="max-width: 30%;"/>
-</p>
+## Description
 
-### Generate API keys
+This plugin provides a seamless integration between WordPress and the Petfinder API, allowing you to showcase adoptable pets using modern React components.
 
-Register in [PetfinderAPI](https://www.petfinder.com/developers/api-key) to get API keys. Petfinder API allows you to search their database for available pets ready for adoption.
+## Features
 
-**Make a new `.env` file and add your secrets**
+- React-based pet display components
+- Petfinder API integration
+- Customizable display options
+- Responsive design
+- Easy to use shortcodes
 
-```sh
- API_KEY = your_api_key
- API_SECRET = your_api_secret
+## Installation
+
+1. Upload the plugin files to `/wp-content/plugins/petfinder-react`
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Configure your Petfinder API credentials in the plugin settings
+
+## Usage
+
+Use the following shortcode to display pets on any page or post:
+```
+[petfinder_react]
 ```
 
-```
-Run the app locally
+## Requirements
 
-~/ npm i & npm run dev 
+- WordPress 5.0 or higher
+- PHP 7.4 or higher
+- Valid Petfinder API credentials
 
-```
-## Scripts
+## Contributing
 
-```sh
-# Run locally
-npm run dev
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-# Make production build
-npm run build
+## License
 
-# Code Formatting
-npm run format
-
-# Clear ./dist & ./cache folder
-npm run clear
-```
-
-### ToDo
-
-- [ ] Provide input from UI
-- [ ] Add Pet Details Page
-
-### LICENSE
-MIT @Junip Dewan
-
+This project is licensed under the GPL v2 or later.
