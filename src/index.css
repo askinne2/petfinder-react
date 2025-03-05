@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .pet-card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1 flex flex-col h-full;
+  }
+  
+  .pet-image {
+    @apply h-56 overflow-hidden relative;
+  }
+  
+  .pet-image img {
+    @apply w-full h-full object-cover transition-transform duration-500 ease-in-out;
+  }
+  
+  .pet-card:hover .pet-image img {
+    @apply scale-105;
+  }
+  
+  .pet-details {
+    @apply p-4 flex flex-col flex-grow;
+  }
+  
+  .pet-name {
+    @apply text-2xl text-pet-primary font-medium mb-2;
+  }
+  
+  .pet-info {
+    @apply text-gray-600 text-sm mb-3;
+  }
+  
+  .pet-breeds {
+    @apply text-gray-500 text-sm mb-3 italic;
+  }
+  
+  .pet-description {
+    @apply text-gray-700 text-base leading-relaxed mb-4 flex-grow;
+  }
+  
+  .pet-footer {
+    @apply flex justify-between items-center;
+  }
+  
+  .adopt-link {
+    @apply bg-pet-primary hover:bg-pet-primary/80 text-white px-5 py-2 rounded-md font-semibold transition-colors inline-block text-center;
+  }
+  
+  .status-badge {
+    @apply absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold uppercase bg-pet-primary/80 text-white;
+  }
+  
+  .distance {
+    @apply text-gray-500;
+  }
+  
+  /* Animation classes */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 30px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  .animated {
+    @apply animate-[fadeInUp_1s_both];
+  }
+  
+  .fadeInUp {
+    animation-name: fadeInUp;
+  }
+  
+  /* Animation delays */
+  .delay-0s { animation-delay: 0.1s; }
+  .delay-1s { animation-delay: 0.2s; }
+  .delay-2s { animation-delay: 0.3s; }
+  .delay-3s { animation-delay: 0.4s; }
+  .delay-4s { animation-delay: 0.5s; }
+  .delay-5s { animation-delay: 0.6s; }
+  .delay-6s { animation-delay: 0.7s; }
+  .delay-7s { animation-delay: 0.8s; }
+  .delay-8s { animation-delay: 0.9s; }
+  .delay-9s { animation-delay: 1s; }
+  
+  /* Alert styles */
+  .alert {
+    @apply p-4 my-5 mx-auto rounded-md max-w-7xl;
+  }
+  
+  .alert-danger {
+    @apply bg-red-100 border border-red-200 text-red-800;
+  }
+}
