@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import ImageCarousel from "../components/ImageCarousel";
 import PetModal from "../components/PetModal";
+import { Link } from 'react-router-dom';
 
 const GridItem = ({ animal, index }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,34 +43,21 @@ const GridItem = ({ animal, index }) => {
 
   return (
     <>
-      <div 
-        className="pet-card animate-fade-in-up cursor-pointer"
+      <Link 
+        to={`/animal/${animal.id}`}
+        className="pet-card animate-fade-in-up hover:shadow-lg transition-all duration-300"
         style={{ animationDelay: `${index * 0.1}s` }}
-        onClick={() => setIsModalOpen(true)}
       >
-        <ImageCarousel images={animal.photos} alt={animal.name} />
-        <div className="pet-details">
-          <h3 className="pet-name">{animal.name}</h3>
-          <div className="pet-info">
-            <span>{getAgeGender()}</span>
-            {animal.distance && (
-              <span className="distance"> • {Math.round(animal.distance)} miles</span>
-            )}
-          </div>
-          <div className="pet-breeds">{getBreeds()}</div>
-          <p className="pet-description">{getShortDescription()}</p>
-          <div className="pet-footer">
-            <a 
-              href={animal.url} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="adopt-link"
-            >
-              Meet {animal.name}
-            </a>
-          </div>
+        <div className="h-90 relative overflow-hidden">
+          <ImageCarousel images={animal.photos} alt={animal.name} />
         </div>
-      </div>
+        <div className="p-4">
+          <h2 className="text-xl font-bold mb-2">{animal.name}</h2>
+          <p className="text-gray-600">{getAgeGender()}</p>
+          <p className="text-sm text-gray-500">{getBreeds()}</p>
+          <p className="mt-2 text-gray-700">{getShortDescription()}</p>
+        </div>
+      </Link>
 
       {isModalOpen && (
         <PetModal 

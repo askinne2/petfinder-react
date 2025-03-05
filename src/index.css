@@ -45,6 +45,47 @@
   .scrollbar-thin::-webkit-scrollbar-thumb {
     @apply bg-gray-400 rounded-full hover:bg-gray-500;
   }
+
+  /* Image gallery transitions */
+  .image-gallery {
+    @apply relative;
+  }
+
+  .image-gallery img {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .image-gallery button:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  /* Fade effect for image transitions */
+  .image-fade-enter {
+    @apply opacity-0;
+  }
+
+  .image-fade-enter-active {
+    @apply opacity-100 transition-opacity duration-300 ease-in-out;
+  }
+
+  .image-fade-exit {
+    @apply opacity-100;
+  }
+
+  .image-fade-exit-active {
+    @apply opacity-0 transition-opacity duration-300 ease-in-out;
+  }
+
+  /* Smooth thumbnail scrolling */
+  .thumbnail-carousel {
+    @apply scroll-smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Enhanced touch support */
+  .image-gallery-swipeable {
+    @apply touch-pan-y select-none;
+  }
 }
 
 /* Add touch swipe support - non-tailwind styles */
@@ -52,4 +93,10 @@
   touch-action: pan-y;
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* Optional: Add CSS custom properties for transition timings */
+:root {
+  --transition-duration: 300ms;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }

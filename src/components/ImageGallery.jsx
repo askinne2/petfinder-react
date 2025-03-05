@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-const ImageGallery = ({ photos }) => {
+const ImageGallery = ({ photos = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const carouselRef = useRef(null);
@@ -67,16 +67,17 @@ const ImageGallery = ({ photos }) => {
   }, [currentIndex]);
 
   return (
-    <div className="flex flex-col justify-center space-y-3">
-    {/* Main featured image */}
-        <div className="relative rounded-lg overflow-hidden h-80 flex items-center justify-center">
-          <img 
-            src={getCurrentImageUrl()} 
-            alt={hasPhotos && photos[currentIndex].name ? photos[currentIndex].name : 'Pet photo'} 
-            className="w-full h-full object-contain"
-          />
-          
-          {/* Navigation buttons */}
+    <div className="image-gallery flex flex-col justify-center space-y-3">
+      {/* Main featured image */}
+      <div className="relative rounded-lg overflow-hidden h-80 flex items-center justify-center">
+        <img 
+          key={currentIndex} // Add key to force remount and trigger transition
+          src={getCurrentImageUrl()} 
+          alt={hasPhotos && photos[currentIndex].name ? photos[currentIndex].name : 'Pet photo'} 
+          className="w-full h-full object-contain transform transition-transform duration-300 ease-in-out"
+        />
+        
+        {/* Navigation buttons */}
         {hasPhotos && photos.length > 1 && (
           <>
             <button 
@@ -105,7 +106,7 @@ const ImageGallery = ({ photos }) => {
       {/* Thumbnail carousel */}
       {hasPhotos && photos.length > 1 && (
         <div 
-          className="flex space-x-2 overflow-x-auto pb-2 scrollbar-thumb-gray-400 scrollbar-track-gray-100 justify-center scrollbar-thin" 
+          className="thumbnail-carousel flex space-x-2 overflow-x-auto pb-2 scrollbar-thumb-gray-400 scrollbar-track-gray-100 justify-center scrollbar-thin" 
           ref={carouselRef}
         >
           {photos.map((photo, index) => (
@@ -145,10 +146,6 @@ ImageGallery.propTypes = {
       full: PropTypes.string
     })
   )
-};
-
-ImageGallery.defaultProps = {
-  photos: []
 };
 
 export default ImageGallery;
