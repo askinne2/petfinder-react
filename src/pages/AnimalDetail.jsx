@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ImageGallery from '../components/ImageGallery';
 import { useAnimal } from '../Api';
@@ -40,6 +40,16 @@ const DetailSkeleton = () => (
 const AnimalDetail = () => {
   const { id } = useParams();
   const { data: animal, isLoading, isError, error } = useAnimal(id);
+
+  // Auto scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });
+  }, [id]);
+
 
   if (isLoading) {
     return <DetailSkeleton />;
