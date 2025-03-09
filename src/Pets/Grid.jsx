@@ -40,7 +40,7 @@ const Grid = () => {
   // Show skeleton while initial data or types are loading
   if (isLoading || isTypesLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50 rounded-lg">
+      <div className="max-w-7xl mx-auto px-4 py-8 rounded-lg">
         <div className="animate-pulse mb-6">
           <div className="h-10 bg-gray-200 rounded w-48"></div>
         </div>
@@ -54,7 +54,7 @@ const Grid = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50 rounded-lg">
+    <div className="max-w-7xl mx-auto px-4 py-8 rounded-lg">
       {status === 'error' && (
         <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4" role="alert">
           <p className="text-red-700">{error.message}</p>
