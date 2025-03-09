@@ -10,6 +10,12 @@ dist/
 coverage/
 .vscode/
 .distignore
+# ignore zip files
+petfinder-react.zip
+# ignore log files
+*.log
+
+
 
 # Add to your .gitignore
 .DS_Store
