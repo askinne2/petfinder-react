@@ -29,6 +29,9 @@ class PetFinder_React_Public {
             true
         );
     
+        // Generate a dedicated nonce for AJAX requests
+        //$ajax_nonce = wp_create_nonce('petfinder_react_ajax_nonce');
+        
         wp_localize_script(
             $this->plugin_name,
             'petfinderReactVars',
@@ -37,8 +40,6 @@ class PetFinder_React_Public {
                 'apiSecret' => $options['api_secret'] ?? '',
                 'shelterId' => $options['shelter_id'] ?? '',
                 'postsPerPage' => $options['posts_per_page'] ?? 20,
-                'restUrl' => rest_url('wp/v2/'),
-                'nonce' => wp_create_nonce('wp_rest'),
                 'isWordPress' => true
             )
         );

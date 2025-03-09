@@ -106,7 +106,7 @@ const ImageGallery = ({ photos = [] }) => {
       {/* Thumbnail carousel */}
       {hasPhotos && photos.length > 1 && (
         <div 
-          className="thumbnail-carousel flex space-x-2 overflow-x-auto pb-2 scrollbar-thumb-gray-400 scrollbar-track-gray-100 justify-center scrollbar-thin" 
+          className="thumbnail-carousel flex space-x-2 overflow-x-auto p-2 scrollbar-thumb-gray-400 scrollbar-track-gray-100 justify-center scrollbar-thin" 
           ref={carouselRef}
         >
           {photos.map((photo, index) => (

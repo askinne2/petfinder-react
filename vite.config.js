@@ -8,6 +8,8 @@ export default defineConfig(({ mode }) => ({
     outDir: 'dist',
     assetsDir: 'assets',
     manifest: true,
+    minify: true, // Ensure minification is explicitly enabled
+    cssMinify: true, // Ensure CSS minification is explicitly enabled
     rollupOptions: {
       output: {
         entryFileNames: 'assets/[name].js',
@@ -31,9 +33,9 @@ export default defineConfig(({ mode }) => ({
         'http://localhost:8888',
         'https://api.petfinder.com'
       ],
-      methods: ['GET', 'POST', 'OPTIONS'],
+      methods: ['GET', 'OPTIONS'],
       credentials: true,
-      allowedHeaders: ['Authorization', 'Content-Type', 'X-WP-Nonce']
+      allowedHeaders: ['Authorization', 'Content-Type']
     }
   },
   define: {

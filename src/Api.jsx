@@ -1,31 +1,72 @@
 import { Client } from "@petfinder/petfinder-js";
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import { isWordPress } from './config/environment';
 
-// Constants
-export const SHELTER_ID = 'AL459';
-export const ITEMS_PER_PAGE = 100;
+// Constants from environment
+const getConfig = () => {
+  if (isWordPress()) {
+    return {
+      apiKey: window.petfinderReactVars.apiKey,
+      apiSecret: window.petfinderReactVars.apiSecret,
+      shelterId: window.petfinderReactVars.shelterId,
+      itemsPerPage: window.petfinderReactVars.postsPerPage || 20
+    };
+  }
+  return {
+    apiKey: import.meta.env.VITE_API_KEY,
+    apiSecret: import.meta.env.VITE_API_SECRET,
+    shelterId: import.meta.env.VITE_API_ORGANIZATION,
+    itemsPerPage: import.meta.env.ITEMS_PER_PAGE || 100
+  };
+};
+
+const config = getConfig();
 
 // Initialize PetFinder client
 const client = new Client({
-  apiKey: import.meta.env.VITE_API_KEY,
-  secret: import.meta.env.VITE_API_SECRET,
-  organization: import.meta.env.VITE_API_ORGANIZATION,
-  limit: import.meta.env.ITEMS_PER_PAGE
+  apiKey: config.apiKey,
+  secret: config.apiSecret,
+  organization: config.shelterId,
+  limit: config.itemsPerPage
 });
+
+// Helper function to get animals
+const getAnimals = async (params = {}) => {
+  try {
+    const response = await client.animal.search({
+      organization: config.shelterId,
+      page: params.page || 1,
+      limit: config.itemsPerPage,
+      status: 'adoptable',
+      ...(params.type && { type: params.type })
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching animals:', error);
+    throw error;
+  }
+};
+
+// Helper function to get a single animal
+const getAnimal = async (id) => {
+  try {
+    const response = await client.animal.show(id);
+    return response.data.animal;
+  } catch (error) {
+    console.error('Error fetching animal:', error);
+    throw error;
+  }
+};
 
 // React Query hooks
 export const useAnimals = (filterType) => {
   return useInfiniteQuery({
     queryKey: ['animals', filterType],
     queryFn: async ({ pageParam = 1 }) => {
-      const response = await client.animal.search({
-        organization: SHELTER_ID,
-        page: pageParam,
-        limit: ITEMS_PER_PAGE,
-        status: 'adoptable',
-        ...(filterType && { type: filterType })
+      return await getAnimals({
+        type: filterType,
+        page: pageParam
       });
-      return response.data;
     },
     getNextPageParam: (lastPage) => {
       if (lastPage.pagination.current_page < lastPage.pagination.total_pages) {
@@ -41,12 +82,9 @@ export const useAnimalTypes = () => {
   return useQuery({
     queryKey: ['animalTypes'],
     queryFn: async () => {
-      const response = await client.animal.search({
-        organization: SHELTER_ID,
-        limit: ITEMS_PER_PAGE
-      });
+      const response = await getAnimals({});
 
-      const typeCounts = response.data.animals.reduce((acc, animal) => {
+      const typeCounts = response.animals.reduce((acc, animal) => {
         acc[animal.type] = (acc[animal.type] || 0) + 1;
         return acc;
       }, {});
@@ -64,10 +102,7 @@ export const useAnimal = (id) => {
   return useQuery({
     queryKey: ['animal', id],
     queryFn: async () => {
-      const response = await client.animal.show(id);
-      //console.log('Full animal data:', response.data.animal); // Debug log
-      
-      return response.data.animal;
+      return await getAnimal(id);
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
